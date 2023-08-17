@@ -1,18 +1,23 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 
-// eslint-disable-next-line react/prop-types
+
+const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
+
+const StatisticsLine = ({ value, text }) => <p>{text} : {value}</p>
+
 const Statistics = ({ good, bad, neutral }) => {
   const all = good + bad + neutral;
 
   return (
     all > 0 ? (<div>
       <h1>Statistics</h1>
-      <p>Good : {good}</p>
-      <p>Neutral : {neutral}</p>
-      <p>Bad : {bad}</p>
-      <p>All : {all}</p>
-      <p>Average : {(good * 1 + neutral * 0 + bad * -1) / all}</p>
-      <p>Positive : {(good / all) * 100} %</p>
+      <StatisticsLine text='Good' value={good} />
+      <StatisticsLine text='Neutral' value={neutral} />
+      <StatisticsLine text='Bad' value={bad} />
+      <StatisticsLine text='All' value={all} />
+      <StatisticsLine text='Average' value={(good * 1 + neutral * 0 + bad * -1) / all} />
+      <StatisticsLine text='Positive' value={((good / all) * 100) + ' %'}/>
     </div>) : 
     <p>No feedback given.</p>
   );
@@ -24,31 +29,13 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  let all = 0;
-  
-  const handleGoodClick = () => {
-    setGood(good + 1);
-    all = all + 1;
-  };
-
-  const handleNeutralClick = () => {
-    setNeutral(neutral + 1);
-    all = all + 1;
-  };
-
-  const handleBadClick = () => {
-    setBad(bad + 1);
-    all = all + 1;
-  };
+  const increment = (state, setState) => () => setState(state + 1);
 
   return (
     <div>
-      <div>
-        <h1>Give Feedback</h1>
-        <button onClick={handleGoodClick}>Good</button>
-        <button onClick={handleNeutralClick}>Neutral</button>
-        <button onClick={handleBadClick}>Bad</button>
-      </div>
+      <Button onClick={increment(good, setGood)} text='Good'/>
+      <Button onClick={increment(neutral, setNeutral)} text='Neutral'/>
+      <Button onClick={increment(bad, setBad)} text='Bad'/>
       <Statistics good={good} bad={bad} neutral={neutral}/>
     </div>
   );
